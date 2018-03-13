@@ -1,6 +1,10 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 
+// Sync to the DB before starting the server
+var db = require("./models");
+db.sequelize.sync();
+
 var PORT = process.env.PORT || 8000;
 var app = express();
 
@@ -12,11 +16,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-var exphbs = require("express-handlebars");
 
+// Setup handlebars
+var exphbs = require("express-handlebars");
+// load in html sources from main
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+
+// Bring in routes
 var routes = require("./controllers/burgersController.js");
 
 app.use(routes);
